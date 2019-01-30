@@ -27,7 +27,7 @@ namespace GodotAgones.Server.Services
 
         public async Task<IEnumerable<Server>> ListServers()
         {
-            var response = await httpClient.GetAsync("fleetallocations");
+            var response = await httpClient.GetAsync("gameservers");
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -36,7 +36,7 @@ namespace GodotAgones.Server.Services
             var json = await response.Content.ReadAsStringAsync();
             dynamic root = JObject.Parse(json);
             var servers = ((IEnumerable<dynamic>)root.items)
-                .Select(fla => fla.status.gameServer)
+                .Where(gs => gs.status.state == "Allocated")
                 .Select(FromDynamic);
             return servers;
         }
