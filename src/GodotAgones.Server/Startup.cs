@@ -25,33 +25,9 @@ namespace GodotAgones.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
-            bool inCluster = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IN_CLUSTER"));
 
-            services.AddHttpClient<AgonesService>(c =>
-            {
-                string baseUrl = "http://127.0.0.1:8001";
-
-                if (inCluster)
-                {
-                    string host = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
-                    string port = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_PORT");
-                    
-                    baseUrl = $"https://{host}:{port}";
-
-                    const string serviceAccountPath = "/var/run/secrets/kubernetes.io/serviceaccount";
-                    string tokenPath = Path.Combine(serviceAccountPath, "token");
-                    string token = File.ReadAllText(tokenPath);
-                    c.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                }
-                
-                // TODO: move to options
-                const string api = "stable.agones.dev";
-                const string version = "v1alpha1";
-                const string @namespace = "default";
-
-                c.BaseAddress = new Uri($"{baseUrl}/apis/{api}/{version}/namespaces/{@namespace}/");
-            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            services.AddHttpClient<AgonesService>(AgonesService.Config.GetActive())
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             });

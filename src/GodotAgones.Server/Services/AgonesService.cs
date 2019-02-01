@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 namespace GodotAgones.Server.Services
 {
     using Models;
-    
 
-    public class AgonesService
+    public partial class AgonesService
     {
         private const string KeyPrefix = "stable.agones.dev/sdk-";
         private const string NameKey = KeyPrefix + "name";
