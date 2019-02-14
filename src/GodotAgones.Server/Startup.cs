@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace GodotAgones.Server
 {
@@ -31,6 +32,11 @@ namespace GodotAgones.Server
             {
                 ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Master Server", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +53,9 @@ namespace GodotAgones.Server
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
             app.UseMvc();
         }
     }
