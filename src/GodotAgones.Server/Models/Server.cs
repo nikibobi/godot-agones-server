@@ -7,7 +7,7 @@ namespace GodotAgones.Server.Models
         public string Name { get; set; }
 
         public string IpAddress { get; set; }
-        
+
         public ushort Port { get; set; }
 
         public byte MaxPlayers { get; set; }
