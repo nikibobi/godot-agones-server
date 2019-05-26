@@ -23,6 +23,10 @@ spec:
         ports:
         - name: godot-agones
           containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200M 
 ---
 apiVersion: v1
 kind: Service
